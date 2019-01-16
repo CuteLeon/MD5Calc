@@ -12,13 +12,10 @@ namespace MD5Calc
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("请传入文件存放路径...");
-                Environment.Exit(-1);
-            }
+            string targetDir = args.Length > 0 ?
+                args[0] :
+                AppDomain.CurrentDomain.BaseDirectory;
 
-            string targetDir = args[0];
             if (!Directory.Exists(targetDir))
             {
                 Console.WriteLine($"未找到文件存放目录：{targetDir}");
@@ -57,7 +54,7 @@ namespace MD5Calc
         {
             try
             {
-                using (FileStream fileStream = new FileStream(fileName, FileMode.Open))
+                using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     MD5 md5 = new MD5CryptoServiceProvider();
                     byte[] hash = md5.ComputeHash(fileStream);
