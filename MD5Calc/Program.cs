@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,6 +10,12 @@ namespace MD5Calc
     {
         static void Main(string[] args)
         {
+            for (int index = 0; index < 10000; index++)
+            {
+                string hash = HashCalculator.GetHash("Greet from Leon.");
+            }
+
+            return;
             string targetDir = args.Length > 0 ?
                 args[0] :
                 AppDomain.CurrentDomain.BaseDirectory;
