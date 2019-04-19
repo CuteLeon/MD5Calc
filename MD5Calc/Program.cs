@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MD5Calc
 {
@@ -10,9 +11,22 @@ namespace MD5Calc
     {
         static void Main(string[] args)
         {
+            string hash = string.Empty;
+
+            for (int index = 0; index < 1000000; index++)
+            {
+                hash = HashCalculator.GetHash("Greet from Leon");
+            }
+
+            hash = string.Empty;
+            Parallel.For(0, 1000000, (i) =>
+            {
+                hash = HashCalculator.GetHash("Greet from Leon");
+            });
+
             for (int index = 0; index < 10000; index++)
             {
-                string hash = HashCalculator.GetHash("Greet from Leon.");
+                hash = HashCalculator.GetHash("Greet from Leon.");
             }
 
             return;

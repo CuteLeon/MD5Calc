@@ -21,7 +21,12 @@ namespace MD5Calc
         /// <param name="plaintText"></param>
         /// <returns></returns>
         public static string GetHash(string plaintText)
-             => GetString(hashAlgorithm?.Value.ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+        {
+            lock (hashAlgorithm)
+            {
+                return GetString(hashAlgorithm?.Value.ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+            }
+        }
 
         /// <summary>
         /// 转换为文本
