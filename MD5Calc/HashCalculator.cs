@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MD5Calc
@@ -9,13 +10,22 @@ namespace MD5Calc
     public static class HashCalculator
     {
         /// <summary>
+        /// 哈希算法
+        /// </summary>
+        /// <remarks>线程安全、懒加载</remarks>
+        private static readonly Lazy<HashAlgorithm> hashAlgorithm = new Lazy<HashAlgorithm>(() => new MD5CryptoServiceProvider(), true);
+
+        /// <summary>
         /// 计算文件哈希
         /// </summary>
         /// <param name="plaintText"></param>
         /// <returns></returns>
         public static string GetHash(string plaintText)
         {
-            return GetString(new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+            lock (hashAlgorithm)
+            {
+                return GetString(hashAlgorithm?.Value.ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+            }
         }
 
         /// <summary>
