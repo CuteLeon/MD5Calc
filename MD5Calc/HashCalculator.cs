@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,10 +14,10 @@ namespace MD5Calc
         /// 哈希算法
         /// </summary>
         /// <remarks>线程安全、懒加载</remarks>
-        private static readonly Lazy<HashAlgorithm> hashAlgorithm = new Lazy<HashAlgorithm>(() => new MD5CryptoServiceProvider(), true);
+        private static readonly HashAlgorithm hashAlgorithm = new MD5CryptoServiceProvider();
 
         /// <summary>
-        /// 计算文件哈希
+        /// 计算哈希
         /// </summary>
         /// <param name="plaintText"></param>
         /// <returns></returns>
@@ -24,7 +25,35 @@ namespace MD5Calc
         {
             lock (hashAlgorithm)
             {
-                return GetString(hashAlgorithm?.Value.ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+                try
+                {
+
+                    return GetString(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(plaintText)));
+                }
+                catch (Exception ex)
+                {
+                    return $"计算哈希失败：{ex.Message}";
+                }
+            }
+        }
+
+        /// <summary>
+        /// 计算文件哈希
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetFileHash(string path)
+        {
+            lock (hashAlgorithm)
+            {
+                try
+                {
+                    return GetString(hashAlgorithm.ComputeHash(File.ReadAllBytes(path)));
+                }
+                catch (Exception ex)
+                {
+                    return $"计算文件哈希失败：{ex.Message}";
+                }
             }
         }
 

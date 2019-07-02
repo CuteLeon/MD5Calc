@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MD5Calc
 {
@@ -11,25 +10,6 @@ namespace MD5Calc
     {
         static void Main(string[] args)
         {
-            string hash = string.Empty;
-
-            for (int index = 0; index < 1000000; index++)
-            {
-                hash = HashCalculator.GetHash("Greet from Leon");
-            }
-
-            hash = string.Empty;
-            Parallel.For(0, 1000000, (i) =>
-            {
-                hash = HashCalculator.GetHash("Greet from Leon");
-            });
-
-            for (int index = 0; index < 10000; index++)
-            {
-                hash = HashCalculator.GetHash("Greet from Leon.");
-            }
-
-            return;
             string targetDir = args.Length > 0 ?
                 args[0] :
                 AppDomain.CurrentDomain.BaseDirectory;
@@ -55,7 +35,7 @@ namespace MD5Calc
                         {
                             streamWriter.WriteLine(string.Format("{0} = {1}",
                                 Path.GetFileName(path),
-                                GetMD5HashFromFile(path)));
+                                HashCalculator.GetFileHash(path)));
                         }
                     });
                 }
@@ -66,23 +46,6 @@ namespace MD5Calc
             Console.WriteLine("任务完成！\n\t=> {0}", exportPath);
             Process.Start("notepad", exportPath);
             Console.ReadLine();
-        }
-
-        private static string GetMD5HashFromFile(string fileName)
-        {
-            try
-            {
-                using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    MD5 md5 = new MD5CryptoServiceProvider();
-                    byte[] hash = md5.ComputeHash(fileStream);
-                    return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("GetMD5HashFromFile() fail,error:" + ex.Message);
-            }
         }
     }
 }
